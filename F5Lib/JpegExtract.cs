@@ -1,5 +1,4 @@
-﻿using log4net;
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
 
@@ -10,7 +9,6 @@ namespace F5
 
     public class JpegExtract : IDisposable
     {
-        private static readonly ILog logger = LogManager.GetLogger(typeof(JpegExtract));
         private Stream output;
         private F5Random random;
         int extractedBit, pos;
@@ -20,15 +18,9 @@ namespace F5
         int extractedByte = 0;
         int shuffledIndex = 0;
 
-        public JpegExtract(Stream output, string password)
-            : this(output, Encoding.ASCII.GetBytes(password))
-        {
-        }
-
-        public JpegExtract(Stream output, byte[] password)
-        {
+        public JpegExtract(Stream output, string password){
             this.output = output;
-            this.random = new F5Random(password);
+            this.random = new F5Random(password);			
         }
 
         public void Extract(Stream input)
@@ -40,10 +32,9 @@ namespace F5
             {
                  coeff = hd.Decode();
             }
-
-            logger.Info("Permutation starts");
+            Console.WriteLine("Permutation starts");
             Permutation permutation = new Permutation(coeff.Length, this.random);
-            logger.Info(coeff.Length + " indices shuffled");
+            Console.WriteLine(coeff.Length + " indices shuffled");
 
             // extract length information
             CalcEmbeddedLength(permutation, coeff);
@@ -51,7 +42,7 @@ namespace F5
             n = (1 << k) - 1;
             this.extractedFileLength &= 0x007fffff;
 
-            logger.Info("Length of embedded file: " + extractedFileLength + " bytes");
+            Console.WriteLine("Length of embedded file: " + extractedFileLength + " bytes");
 
             if (n > 0)
             {
@@ -106,7 +97,7 @@ namespace F5
         leaveContext: ;
             if (this.nBytesExtracted < this.extractedFileLength)
             {
-                logger.Warn("Incomplete file: only " + this.nBytesExtracted + 
+                Console.WriteLine("Incomplete file: only " + this.nBytesExtracted +
                     " of " + this.extractedFileLength + " bytes extracted");
             }
         }

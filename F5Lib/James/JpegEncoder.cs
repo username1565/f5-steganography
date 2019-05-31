@@ -1,5 +1,4 @@
-﻿using log4net;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -12,8 +11,6 @@ namespace F5.James
 
     public sealed class JpegEncoder : IDisposable
     {
-        private static readonly ILog logger = LogManager.GetLogger(typeof(JpegEncoder));
-
         private BufferedStream output;
         private JpegInfo JpegObj;
         private Huffman huffman;
@@ -255,8 +252,9 @@ namespace F5.James
 
             coeff = new int[coeffCount];
 
-            logger.Info("DCT/quantisation starts");
-            logger.Info(this.imageWidth + " x " + this.imageHeight);
+            Console.WriteLine("DCT/quantisation starts");
+            Console.WriteLine(this.imageWidth + " x " + this.imageHeight);
+
             for (r = 0; r < MinBlockHeight; r++)
             {
                 for (c = 0; c < MinBlockWidth; c++)
@@ -365,7 +363,8 @@ namespace F5.James
             int _thrown = 0;
             int _zero = 0;
 
-            logger.Info("got " + coeffCount + " DCT AC/DC coefficients");
+            Console.WriteLine("got " + coeffCount + " DCT AC/DC coefficients");		//Console.WriteLine
+			
             for (i = 0; i < coeffCount; i++)
             {
                 if (i % 64 == 0)
@@ -379,11 +378,11 @@ namespace F5.James
             _expected = _large + (int)(0.49 * _one);
             //
 
-            logger.Info("one=" + _one);
-            logger.Info("large=" + _large);
+            Console.WriteLine("one=" + _one);
+            Console.WriteLine("large=" + _large);
             //
-            logger.Info("expected capacity: " + _expected + " bits");
-            logger.Info("expected capacity with");
+            Console.WriteLine("expected capacity: " + _expected + " bits");
+            Console.WriteLine("expected capacity with");
 
             for (i = 1; i < 8; i++)
             {
@@ -400,10 +399,10 @@ namespace F5.James
                 if (usable == 0)
                     break;
                 if (i == 1)
-                    logger.Info("default");
+                    Console.WriteLine("default");
                 else
-                    logger.Info("(1, " + n + ", " + i + ")");
-                logger.Info(" code: " + usable + " bytes (efficiency: " + usable * 8 / changed + "." +
+                    Console.WriteLine("(1, " + n + ", " + i + ")");
+                Console.WriteLine(" code: " + usable + " bytes (efficiency: " + usable * 8 / changed + "." +
                     usable * 80 / changed % 10 + " bits per change)");
             }
 
@@ -411,8 +410,10 @@ namespace F5.James
             if (this.embeddedData != null)
             {
                 // Now we embed the secret data in the permutated sequence.
-                logger.Info("Permutation starts");
-                F5Random random = new F5Random(Encoding.ASCII.GetBytes(this.password));
+                Console.WriteLine("Permutation starts");
+
+                F5Random random = new F5Random(this.password);
+				
                 Permutation permutation = new Permutation(coeffCount, random);
                 int nextBitToEmbed = 0;
                 int byteToEmbed = Convert.ToInt32(this.embeddedData.Length);
@@ -428,7 +429,7 @@ namespace F5.James
                 }*/
 
 
-                logger.Info("Embedding of " + (byteToEmbed * 8 + 32) + " bits (" + byteToEmbed + "+4 bytes) ");
+                Console.WriteLine("Embedding of " + (byteToEmbed * 8 + 32) + " bits (" + byteToEmbed + "+4 bytes) ");
                 // We use the most significant byte for the 1 of n
                 // code, and reserve one extra bit for future use.
                 if (byteToEmbed > 0x007fffff)
@@ -456,14 +457,14 @@ namespace F5.James
                 switch (this.n)
                 {
                     case 0:
-                        logger.Info("using default code, file will not fit");
+                        Console.WriteLine("using default code, file will not fit");
                         this.n++;
                         break;
                     case 1:
-                        logger.Info("using default code");
+                        Console.WriteLine("using default code");
                         break;
                     default:
-                        logger.Info("using (1, " + this.n + ", " + k + ") code");
+                        Console.WriteLine("using (1, " + this.n + ", " + k + ") code");
                         break;
                 }
                 byteToEmbed |= k << 24; // store k in the status word
@@ -584,8 +585,7 @@ namespace F5.James
                     }
                 }
             }
-
-            logger.Info("Starting Huffman Encoding.");
+            Console.WriteLine("Starting Huffman Encoding.");
             shuffledIndex = 0;
             for (r = 0; r < MinBlockHeight; r++)
             {

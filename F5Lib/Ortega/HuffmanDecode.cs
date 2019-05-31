@@ -1,5 +1,4 @@
-﻿using log4net;
-using System;
+﻿using System;
 using System.IO;
 
 namespace F5.Ortega
@@ -8,8 +7,6 @@ namespace F5.Ortega
 
     internal sealed class HuffmanDecode : IDisposable
     {
-        private static readonly ILog logger = LogManager.GetLogger(typeof(HuffmanDecode));
-
         private static readonly byte[] APP = new byte[] 
         {
             0xE0, 0xE1, 0xE2, 0xE3, 0xE4, 0xE5, 0xE6, 0xE7, 0xE8, 0xE9, 0xEA, 0xEB, 0xEC, 0xED, 0xEE, 0xEF
@@ -214,12 +211,12 @@ namespace F5.Ortega
                         dis.Read();
                         if (dis.Read() != EOI)
                         {
-                            logger.Warn("file does not end with EOI");
+                            Console.WriteLine("file does not end with EOI");
                         }
                     }
                     else
                     {
-                        logger.Warn("file does not end with EOI");
+                        Console.WriteLine("file does not end with EOI");
                     }
                     break;
                 }
@@ -377,7 +374,7 @@ namespace F5.Ortega
                 case 3:
                     return 6 * ((X + 15) / 16) * ((Y + 15) / 16);
                 default:
-                    logger.Warn("Nf weder 1 noch 3");
+                    Console.WriteLine("Nf weder 1 noch 3");
                     return 0;
             }
         }
@@ -562,7 +559,7 @@ namespace F5.Ortega
                 }
 
                 // store blocks in buffer
-                logger.Info(j + " ");
+                Console.WriteLine(j + " ");
                 for (x = 0; x < 8; x++)
                 {
                     for (y = 0; y < 8; y++)
