@@ -1,4 +1,4 @@
-# C\# Implementation of F5 Algorithm for JPEG Steganography
+# C\# Lite version of the Implementation F5 Algorithm for JPEG Steganography (without any another dependencies and packages).
 F5 is a steganography algo for hiding information in JPEG images.
 
 More Information & Java Implementation:
@@ -8,5 +8,4 @@ Python Implementation:
 (https://github.com/jackfengji/f5-steganography/)
 
 ## Dependencies:
-BouncyCastle
-log4net
+No any another dependencies.
